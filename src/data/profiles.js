@@ -74,22 +74,9 @@ export const students = [
 ]
 
 export const defaultAvatars = [
-  { emoji: '🦸', label: 'Hero' },
-  { emoji: '🧙', label: 'Wizard' },
-  { emoji: '🦄', label: 'Unicorn' },
-  { emoji: '🤖', label: 'Robot' },
-  { emoji: '👾', label: 'Alien' },
-  { emoji: '🐱', label: 'Cat' },
-  { emoji: '🦊', label: 'Fox' },
-  { emoji: '🐼', label: 'Panda' },
-  { emoji: '🎮', label: 'Gamer' },
-  { emoji: '🧝', label: 'Elf' },
-  { emoji: '🧛', label: 'Vampire' },
-  { emoji: '🐉', label: 'Dragon' },
-  { emoji: '👑', label: 'King' },
-  { emoji: '🎸', label: 'Rockstar' },
-  { emoji: '🌈', label: 'Rainbow' },
-  { emoji: '⭐', label: 'Star' },
+  { src: '/avatars/SMO.png', label: 'SMO' },
+  { src: '/avatars/Gemini_Generated_Image_ryvr27ryvr27ryvr.png', label: 'Star' },
+  { src: '/avatars/Gemini_Generated_Image_t1phe6t1phe6t1ph.png', label: 'Flame' },
 ]
 
 export function getStudentById(id) {

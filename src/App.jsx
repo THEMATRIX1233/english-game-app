@@ -8,19 +8,23 @@ import ArtistTeacherPanel from './components/ArtistTeacherPanel'
 export default function App() {
   const [view, setView] = useState(null)
   const [artistId, setArtistId] = useState(null)
+  const [gamePin, setGamePin] = useState(null)
 
   useEffect(() => {
     const detect = () => {
       const hash = window.location.hash
       const teacherMatch = hash.match(/^#teacher\/([a-zA-Z0-9_+]+)$/)
-      if (hash === '#teacher') { setView('teacher'); setArtistId(null) }
-      else if (hash === '#game') { setView('game'); setArtistId(null) }
-      else if (hash === '#play') { setView('play'); setArtistId(null) }
+      const gameMatch = hash.match(/^#game\/([a-zA-Z0-9]+)$/)
+      if (hash === '#teacher') { setView('teacher'); setArtistId(null); setGamePin(null) }
+      else if (hash === '#game') { setView('game'); setArtistId(null); setGamePin(null) }
+      else if (gameMatch) { setView('game'); setGamePin(gameMatch[1].toUpperCase()); setArtistId(null) }
+      else if (hash === '#play') { setView('play'); setArtistId(null); setGamePin(null) }
       else if (teacherMatch) {
         setView('artist-teacher')
         setArtistId(teacherMatch[1])
+        setGamePin(null)
       }
-      else if (hash === '#lobby' || hash === '' || hash === '#') { setView('lobby'); setArtistId(null) }
+      else if (hash === '#lobby' || hash === '' || hash === '#') { setView('lobby'); setArtistId(null); setGamePin(null) }
       else setView('lobby')
     }
     detect()
@@ -49,7 +53,7 @@ export default function App() {
   }
 
   if (view === 'teacher') return <TeacherPanel />
-  if (view === 'game') return <GameView />
+  if (view === 'game') return <GameView gamePin={gamePin} />
   if (view === 'play') return <PlayerView />
 
   return null

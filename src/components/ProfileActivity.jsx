@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getStudentById, defaultAvatars } from '../data/profiles'
+import AvatarDisplay from './AvatarDisplay'
 import { getQuestionsForStudent, getArtistNameForStudent } from '../data/artistQuestions'
 import { teamArtists } from '../data/teamPlaylist'
 import { getRandomQuestion } from '../data/teamData'
@@ -21,7 +22,7 @@ export default function ProfileActivity({ studentId, onBack }) {
 
   const [activeTab, setActiveTab] = useState('info')
   const [playerName, setPlayerName] = useState('')
-  const [avatar, setAvatar] = useState('')
+  const [avatar, setAvatar] = useState(defaultAvatars[0]?.src || '')
   const [joined, setJoined] = useState(false)
   const [participants, setParticipants] = useState([])
   const [currentQIndex, setCurrentQIndex] = useState(0)
@@ -49,7 +50,7 @@ export default function ProfileActivity({ studentId, onBack }) {
     const savedAvatar = localStorage.getItem(`${storageKey}_avatar`)
     if (savedName) {
       setPlayerName(savedName)
-      setAvatar(savedAvatar || '')
+      setAvatar(savedAvatar || defaultAvatars[0]?.src || '')
       setJoined(true)
     }
     const gqs = []
@@ -166,7 +167,7 @@ export default function ProfileActivity({ studentId, onBack }) {
           <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl border border-white/[0.06] p-8 text-center space-y-6 shadow-2xl">
             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br mx-auto flex items-center justify-center text-5xl border-2 border-white/10"
               style={{ background: `linear-gradient(135deg, ${student.color}30, ${student.color}10)` }}>
-              {avatar || getDefaultEmoji(studentId)}
+              <AvatarDisplay avatar={avatar || getDefaultEmoji(studentId)} className="text-5xl" imgClass="w-24 h-24 rounded-3xl" />
             </div>
             <div>
               <h1 className="text-3xl font-black text-white">{student.name}</h1>
@@ -192,17 +193,20 @@ export default function ProfileActivity({ studentId, onBack }) {
                   Tu avatar
                 </label>
                 <div className="flex flex-wrap justify-center gap-2">
-                  {defaultAvatars.map(a => (
-                    <button key={a.emoji} onClick={() => setAvatar(a.emoji)}
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all duration-200 ${
-                        avatar === a.emoji
-                          ? 'bg-purple-500/30 border-2 border-purple-400 scale-110'
-                          : 'bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1]'
-                      }`}
-                      title={a.label}>
-                      {a.emoji}
-                    </button>
-                  ))}
+                  {defaultAvatars.map(a => {
+                    const val = a.src || a.emoji
+                    return (
+                      <button key={val} onClick={() => setAvatar(val)}
+                        className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-200 overflow-hidden ${
+                          avatar === val
+                            ? 'bg-purple-500/30 border-2 border-purple-400 scale-110'
+                            : 'bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1]'
+                        }`}
+                        title={a.label}>
+                        {a.emoji ? <span className="text-lg">{a.emoji}</span> : <img src={a.src} alt={a.label} className="w-full h-full object-cover" />}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -244,7 +248,7 @@ export default function ProfileActivity({ studentId, onBack }) {
             <button onClick={onBack} className="text-white/30 hover:text-white/60 text-sm transition-all">
               ←
             </button>
-            <span className="text-3xl">{avatar || getDefaultEmoji(studentId)}</span>
+            <AvatarDisplay avatar={avatar || getDefaultEmoji(studentId)} className="text-3xl" imgClass="w-10 h-10 rounded-full" />
             <div>
               <h2 className="text-white font-bold text-lg">{student.name}</h2>
               <p className="text-white/40 text-xs">
@@ -547,7 +551,7 @@ export default function ProfileActivity({ studentId, onBack }) {
                   <div className="flex flex-wrap gap-2 mb-4">
                     {participants.map((p, i) => (
                       <div key={p.name} className="inline-flex items-center gap-2 px-3 py-2 bg-white/[0.06] rounded-xl border border-white/[0.06]">
-                        <span>{p.avatar || '👤'}</span>
+                        <AvatarDisplay avatar={p.avatar} className="text-lg" imgClass="w-6 h-6 rounded-full" />
                         <span className="text-white text-sm font-medium">{p.name}</span>
                         <button onClick={() => removeParticipant(p.name)}
                           className="text-white/20 hover:text-red-400 transition-all text-xs ml-1">✕</button>
@@ -588,7 +592,7 @@ export default function ProfileActivity({ studentId, onBack }) {
                         <div className="flex items-center justify-center gap-4">
                           {pair.map((p, j) => (
                             <div key={p.name} className="flex items-center gap-2">
-                              <span className="text-2xl">{p.avatar || '👤'}</span>
+                              <AvatarDisplay avatar={p.avatar} className="text-2xl" imgClass="w-8 h-8 rounded-full" />
                               <span className="text-white font-semibold">{p.name}</span>
                               {j < pair.length - 1 && <span className="text-white/20 mx-2">⟷</span>}
                             </div>

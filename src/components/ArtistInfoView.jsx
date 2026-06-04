@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { connect, disconnect } from '../socket'
 import { getRandomArtist } from '../data/teamPlaylist'
 
 export default function ArtistInfoView() {
@@ -7,12 +6,7 @@ export default function ArtistInfoView() {
   const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
-    const s = connect()
-    s.on('connect', () => {
-      s.emit('join-view', 'artist')
-      setArtist(getRandomArtist())
-    })
-    return () => { disconnect() }
+    setArtist(getRandomArtist())
   }, [])
 
   const getNextArtist = () => {
