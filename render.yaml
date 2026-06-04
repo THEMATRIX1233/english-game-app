@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: english-game-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
