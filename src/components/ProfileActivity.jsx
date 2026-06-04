@@ -197,7 +197,7 @@ export default function ProfileActivity({ studentId, onBack }) {
                     const val = a.src || a.emoji
                     return (
                       <button key={val} onClick={() => setAvatar(val)}
-                        className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-200 overflow-hidden ${
+                        className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all duration-200 overflow-hidden ${
                           avatar === val
                             ? 'bg-purple-500/30 border-2 border-purple-400 scale-110'
                             : 'bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1]'

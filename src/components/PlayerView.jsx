@@ -115,12 +115,12 @@ export default function PlayerView() {
             </div>
             <div>
               <label className="text-xs uppercase tracking-widest text-white/30 font-semibold mb-3 block">Your Avatar</label>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {AVATARS.map((a, i) => {
                   const val = a.emoji || a.src
                   return (
                     <button key={a.emoji || a.src} onClick={() => setAvatar(val)}
-                      className={`aspect-square rounded-xl flex items-center justify-center transition-all duration-200 overflow-hidden ${avatar === val ? 'bg-purple-500/30 border-2 border-purple-400 scale-110 shadow-lg shadow-purple-500/20' : 'bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1]'}`}
+                      className={`aspect-square rounded-2xl flex items-center justify-center transition-all duration-200 overflow-hidden ${avatar === val ? 'bg-purple-500/30 border-2 border-purple-400 scale-110 shadow-lg shadow-purple-500/20' : 'bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1]'}`}
                       title={a.label}>
                       {a.emoji ? <span className="text-2xl">{a.emoji}</span> : <img src={a.src} alt={a.label} className="w-full h-full object-cover" />}
                     </button>
