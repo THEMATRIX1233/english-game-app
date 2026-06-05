@@ -362,6 +362,18 @@ export const artistQuestions = {
       },
     ],
   },
+  araceli: {
+    artist: 'Selena Gomez',
+    questions: [
+      { id: 'sg1', type: 'multiple-choice', question: 'Who is Selena Gomez?', options: ['An American singer, actress, producer, and businesswoman', 'A British model', 'A French chef', 'A German athlete'], correctIndex: 0, category: 'artist-info' },
+      { id: 'sg2', type: 'multiple-choice', question: 'Where did the concert take place?', options: ['Mexico City', 'Los Angeles', 'London', 'Tokyo'], correctIndex: 0, category: 'concert-experience' },
+      { id: 'sg3', type: 'multiple-choice', question: 'Who did you go to the concert with?', options: ['My best friend', 'My parents', 'My cousin', 'My neighbor'], correctIndex: 0, category: 'concert-experience' },
+      { id: 'sg4', type: 'multiple-choice', question: 'How did you get to the concert?', options: ['By bus and metro', 'By car', 'By taxi', 'By bike'], correctIndex: 0, category: 'concert-experience' },
+      { id: 'sg5', type: 'multiple-choice', question: 'What was the weather like on the day of the concert?', options: ['Warm and sunny', 'Cold and rainy', 'Snowy', 'Windy'], correctIndex: 0, category: 'concert-experience' },
+      { id: 'sg6', type: 'multiple-choice', question: 'What genre does Selena Gomez sing?', options: ['Pop', 'Heavy Metal', 'Jazz', 'Country'], correctIndex: 0, category: 'music' },
+      { id: 'sg7', type: 'multiple-choice', question: 'Which of these is a Selena Gomez song?', options: ['Hands To Myself', 'Bohemian Rhapsody', 'Hotel California', 'Billie Jean'], correctIndex: 0, category: 'music' },
+    ],
+  },
   andresito: {
     artist: 'The Weeknd',
     questions: [

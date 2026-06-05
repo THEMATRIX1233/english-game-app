@@ -80,6 +80,15 @@ export const teamArtists = [
     description: "The Weeknd is a Canadian singer, songwriter, and record producer known for his unique voice and style.",
     concertFact: "Last month I attended The Weeknd's concert. The light show was spectacular!",
   },
+  {
+    id: 10,
+    name: "Selena Gomez",
+    nationality: "American",
+    genre: "Pop",
+    popularSong: "Hands To Myself",
+    description: "Selena Gomez is an American singer, actress, producer, and businesswoman.",
+    concertFact: "I went to Selena Gomez's concert in Mexico City with my best friend. The weather was warm and sunny!",
+  },
 ]
 
 export const grammarExercises = [

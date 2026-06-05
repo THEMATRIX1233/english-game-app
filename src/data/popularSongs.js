@@ -23,6 +23,9 @@ export const popularSongs = [
   { trackName: "MI$ LLAMADA$", artistName: "Junior H", album: "DEPR</3$$ED MFKZ", previewUrl: null, artworkUrl100: null },
   { trackName: "MIENTRAS DUERMES", artistName: "Junior H", album: "$AD BOYZ 4 LIFE II", previewUrl: null, artworkUrl100: null },
   { trackName: "Blinding Lights", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
+  { trackName: "Hands To Myself", artistName: "Selena Gomez", album: "Revival", previewUrl: null, artworkUrl100: null },
+  { trackName: "Good For You", artistName: "Selena Gomez", album: "Revival", previewUrl: null, artworkUrl100: null },
+  { trackName: "Love You Like A Love Song", artistName: "Selena Gomez", album: "When the Sun Goes Down", previewUrl: null, artworkUrl100: null },
   { trackName: "Save Your Tears", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Starboy", artistName: "The Weeknd", album: "Starboy", previewUrl: null, artworkUrl100: null },
 ]

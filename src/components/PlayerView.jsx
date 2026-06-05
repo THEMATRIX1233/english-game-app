@@ -20,13 +20,29 @@ export default function PlayerView() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [timeLeft, setTimeLeft] = useState(30)
   const [fadeIn, setFadeIn] = useState(false)
+  const [resultData, setResultData] = useState(null)
+  const [score, setScore] = useState(0)
+  const [roundScore, setRoundScore] = useState(0)
   const clientRef = useRef(null)
+  const playerIdRef = useRef(null)
+  const audioRef = useRef(null)
 
   useEffect(() => {
     return () => {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null }
       if (clientRef.current) destroyClient(clientRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    if (currentQuestion?.previewUrl && phase === 'question') {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0 }
+      const audio = new Audio(currentQuestion.previewUrl)
+      audioRef.current = audio
+      audio.play().catch(() => {})
+      return () => { if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0 } }
+    }
+  }, [currentQuestion, phase])
 
   const handleJoin = useCallback(async () => {
     if (!name.trim() || !pin.trim()) return
@@ -43,26 +59,46 @@ export default function PlayerView() {
 
       onClientData(client.conn, (data) => {
         if (data.type === 'joined') {
-          setPhase('waiting')
+          playerIdRef.current = data.playerId || playerId
+          setPhase('result')
           setFadeIn(true)
         } else if (data.type === 'question') {
           setCurrentQuestion(data.question)
           setSelectedAnswer(null)
           setTimeLeft(data.timeLimit || 30)
+          setResultData(null)
           setPhase('question')
           setFadeIn(false)
           setTimeout(() => setFadeIn(true), 50)
         } else if (data.type === 'results') {
-          setPhase('waiting')
+          const myId = playerIdRef.current
+          const myAnswer = data.answers?.[myId]
+          const correctIdx = data.correctIndex
+          const wasCorrect = myAnswer === correctIdx
+          const myPlayer = data.players?.find(p => p.id === myId)
+          const newScore = myPlayer?.score || score
+          const earned = wasCorrect ? newScore - score : 0
+          setScore(newScore)
+          setRoundScore(earned)
+          setResultData({
+            wasCorrect,
+            correctIndex: correctIdx,
+            correctAnswer: currentQuestion?.options?.[correctIdx],
+            earned,
+            question: currentQuestion,
+            selectedAnswer: myAnswer,
+          })
+          setPhase('result')
           setFadeIn(true)
         } else if (data.type === 'finished') {
           setPhase('waiting')
+          setFadeIn(true)
         }
       })
     } catch {
       setError('Could not connect to game. Check the PIN and try again.')
     }
-  }, [name, pin, avatar])
+  }, [name, pin, avatar, score])
 
   useEffect(() => {
     if (phase === 'question' && timeLeft > 0) {
@@ -74,7 +110,7 @@ export default function PlayerView() {
   const handleAnswer = (index) => {
     if (!clientRef.current || selectedAnswer !== null) return
     setSelectedAnswer(index)
-    clientSend(clientRef.current.conn, { type: 'answer', playerId: clientRef.current.id, answerIndex: index })
+    clientSend(clientRef.current.conn, { type: 'answer', playerId: playerIdRef.current || clientRef.current.id, answerIndex: index })
   }
 
   if (phase === 'join') {
@@ -187,6 +223,13 @@ export default function PlayerView() {
         </div>
         <div className="flex-1 flex flex-col justify-center p-4">
           <div className="max-w-md mx-auto w-full space-y-6">
+            {currentQuestion.previewUrl && (
+              <div className="flex justify-center">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center animate-pulse">
+                  <span className="text-3xl">🎵</span>
+                </div>
+              </div>
+            )}
             <h2 className="text-2xl font-black text-white text-center leading-tight">{currentQuestion.question}</h2>
             {currentQuestion.type === 'grammar' && currentQuestion.prompt && (
               <p className="text-xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">"{currentQuestion.prompt}"</p>
@@ -215,18 +258,40 @@ export default function PlayerView() {
     )
   }
 
-  if (phase === 'answered') {
+  if (phase === 'result' && resultData) {
+    const { wasCorrect, correctAnswer, earned } = resultData
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#1a0a2e] flex items-center justify-center p-4">
-        <div className={`text-center space-y-6 transition-all duration-500 ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/20"><span className="text-4xl">✅</span></div>
+      <div className={`min-h-screen bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#1a0a2e] flex items-center justify-center p-4 transition-all duration-500 ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+        <div className="text-center space-y-8 max-w-sm mx-auto">
+          <div className={`w-28 h-28 rounded-full mx-auto flex items-center justify-center text-6xl border-4 ${wasCorrect ? 'bg-emerald-500/20 border-emerald-500/50' : 'bg-red-500/20 border-red-500/50'}`}>
+            {wasCorrect ? '✅' : '❌'}
+          </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">Answer submitted!</h2>
-            <p className="text-white/50 mt-1">Waiting for others to finish...</p>
+            <h2 className={`text-4xl font-black ${wasCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
+              {wasCorrect ? 'Correct!' : 'Incorrect'}
+            </h2>
+            {!wasCorrect && correctAnswer && (
+              <p className="text-white/60 mt-3 text-lg">
+                Answer: <span className="text-white font-bold">{correctAnswer}</span>
+              </p>
+            )}
           </div>
+          {wasCorrect && earned > 0 && (
+            <div className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-2xl p-5 border border-amber-500/30">
+              <p className="text-4xl font-black text-yellow-400">+{earned}</p>
+              <p className="text-yellow-400/60 text-sm uppercase tracking-wider font-semibold mt-1">Points</p>
+            </div>
+          )}
+          {score > 0 && (
+            <div className="bg-white/[0.04] rounded-2xl p-4 border border-white/[0.06]">
+              <p className="text-white/40 text-xs uppercase tracking-wider font-semibold">Total Score</p>
+              <p className="text-2xl font-black text-white">{score.toLocaleString()}</p>
+            </div>
+          )}
           <div className="flex justify-center gap-2">
-            {[0,1,2].map(i => <span key={i} className="w-3 h-3 rounded-full bg-emerald-500/50 animate-bounce" style={{animationDelay:`${i*0.2}s`}} />)}
+            {[0,1,2].map(i => <span key={i} className="w-3 h-3 rounded-full bg-purple-500/50 animate-bounce" style={{animationDelay:`${i*0.2}s`}} />)}
           </div>
+          <p className="text-white/40 text-sm">Waiting for next question...</p>
         </div>
       </div>
     )

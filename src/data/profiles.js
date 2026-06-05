@@ -71,6 +71,15 @@ export const students = [
     gradient: 'from-purple-400 to-violet-500',
     bgGradient: 'from-purple-900/40 to-violet-900/30',
   },
+  {
+    id: 'araceli',
+    name: 'Araceli',
+    artist: 'Selena Gomez',
+    artistId: 10,
+    color: '#FF69B4',
+    gradient: 'from-pink-400 to-rose-500',
+    bgGradient: 'from-pink-900/40 to-rose-900/30',
+  },
 ]
 
 export const defaultAvatars = [
@@ -78,6 +87,15 @@ export const defaultAvatars = [
   { src: '/avatars/Gemini_Generated_Image_ryvr27ryvr27ryvr.png', label: 'Star' },
   { src: '/avatars/Gemini_Generated_Image_t1phe6t1phe6t1ph.png', label: 'Flame' },
 ]
+
+export function getDefaultEmoji(id) {
+  const map = {
+    vanesa: '🎤', uriel: '🎧', paloma: '🎵',
+    jareth: '🎸', yahir: '🔥', fernanda: '✨', diego: '⚡',
+    andresito: '🌟', araceli: '💖',
+  }
+  return map[id] || '👤'
+}
 
 export function getStudentById(id) {
   return students.find(s => s.id === id) || null
