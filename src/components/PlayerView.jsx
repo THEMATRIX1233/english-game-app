@@ -8,6 +8,11 @@ const AVATARS = [
   { src: '/avatars/SMO.png', label: 'SMO' },
   { src: '/avatars/Gemini_Generated_Image_ryvr27ryvr27ryvr.png', label: 'Star' },
   { src: '/avatars/Gemini_Generated_Image_t1phe6t1phe6t1ph.png', label: 'Flame' },
+  { src: '/avatars/selena.png', label: 'Selena Gomez' },
+  { src: '/avatars/joji.png', label: 'Joji' },
+  { src: '/avatars/weeknd.png', label: 'The Weeknd' },
+  { src: '/avatars/bieber.png', label: 'Justin Bieber' },
+  { src: '/avatars/rammstein.png', label: 'Rammstein' },
 ]
 
 export default function PlayerView() {
@@ -26,6 +31,11 @@ export default function PlayerView() {
   const clientRef = useRef(null)
   const playerIdRef = useRef(null)
   const audioRef = useRef(null)
+  const scoreRef = useRef(0)
+  const questionRef = useRef(null)
+
+  useEffect(() => { scoreRef.current = score }, [score])
+  useEffect(() => { questionRef.current = currentQuestion }, [currentQuestion])
 
   useEffect(() => {
     return () => {
@@ -60,7 +70,7 @@ export default function PlayerView() {
       onClientData(client.conn, (data) => {
         if (data.type === 'joined') {
           playerIdRef.current = data.playerId || playerId
-          setPhase('result')
+          setPhase('waiting')
           setFadeIn(true)
         } else if (data.type === 'question') {
           setCurrentQuestion(data.question)
@@ -76,16 +86,17 @@ export default function PlayerView() {
           const correctIdx = data.correctIndex
           const wasCorrect = myAnswer === correctIdx
           const myPlayer = data.players?.find(p => p.id === myId)
-          const newScore = myPlayer?.score || score
-          const earned = wasCorrect ? newScore - score : 0
+          const prevScore = scoreRef.current
+          const newScore = myPlayer?.score || prevScore
+          const earned = wasCorrect ? newScore - prevScore : 0
           setScore(newScore)
           setRoundScore(earned)
           setResultData({
             wasCorrect,
             correctIndex: correctIdx,
-            correctAnswer: currentQuestion?.options?.[correctIdx],
+            correctAnswer: questionRef.current?.options?.[correctIdx],
             earned,
-            question: currentQuestion,
+            question: questionRef.current,
             selectedAnswer: myAnswer,
           })
           setPhase('result')
@@ -98,7 +109,7 @@ export default function PlayerView() {
     } catch {
       setError('Could not connect to game. Check the PIN and try again.')
     }
-  }, [name, pin, avatar, score])
+  }, [name, pin, avatar])
 
   useEffect(() => {
     if (phase === 'question' && timeLeft > 0) {
@@ -151,7 +162,7 @@ export default function PlayerView() {
             </div>
             <div>
               <label className="text-xs uppercase tracking-widest text-white/30 font-semibold mb-3 block">Your Avatar</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 {AVATARS.map((a, i) => {
                   const val = a.emoji || a.src
                   return (

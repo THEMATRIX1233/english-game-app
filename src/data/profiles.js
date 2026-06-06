@@ -86,6 +86,11 @@ export const defaultAvatars = [
   { src: '/avatars/SMO.png', label: 'SMO' },
   { src: '/avatars/Gemini_Generated_Image_ryvr27ryvr27ryvr.png', label: 'Star' },
   { src: '/avatars/Gemini_Generated_Image_t1phe6t1phe6t1ph.png', label: 'Flame' },
+  { src: '/avatars/selena.png', label: 'Selena Gomez' },
+  { src: '/avatars/joji.png', label: 'Joji' },
+  { src: '/avatars/weeknd.png', label: 'The Weeknd' },
+  { src: '/avatars/bieber.png', label: 'Justin Bieber' },
+  { src: '/avatars/rammstein.png', label: 'Rammstein' },
 ]
 
 export function getDefaultEmoji(id) {
