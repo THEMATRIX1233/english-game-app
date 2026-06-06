@@ -8,18 +8,9 @@ const ICE_SERVERS = {
     { urls: 'stun:stun3.l.google.com:19302' },
     { urls: 'stun:stun4.l.google.com:19302' },
     { urls: 'stun:stun.cloudflare.com:3478' },
-    {
-      urls: [
-        'turn:global.relay.metered.ca:80?transport=tcp',
-        'turn:global.relay.metered.ca:443?transport=tcp',
-        'turns:global.relay.metered.ca:443?transport=tcp',
-      ],
-      username: '370e0c14a753092e97cd645f',
-      credential: 'TJ+gyUoqt2xo3oI2',
-    },
   ],
-  iceCandidatePoolSize: 10,
-  sdpSemantics: 'unified-plan'
+  iceTransportPolicy: 'all',
+  sdpSemantics: 'unified-plan',
 }
 
 const PEER_OPTIONS = { debug: 0, config: ICE_SERVERS }
@@ -34,7 +25,7 @@ export function createHost(pin) {
   const peer = new Peer(pin, PEER_OPTIONS)
   const host = { peer, pin, connections: new Map(), displayConn: null }
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 30000)
+    const t = setTimeout(() => reject(new Error('No se pudo crear el juego. Revisa tu conexión a internet.')), 30000)
     peer.on('open', () => { clearTimeout(t); resolve(host) })
     peer.on('error', (e) => { clearTimeout(t); reject(e) })
   })
@@ -63,11 +54,12 @@ export function onHostConnection(host, cb) {
       host.connections.delete(conn)
       if (host.displayConn === conn) host.displayConn = null
     })
+    conn.on('error', () => {})
   })
 }
 
 export function hostSend(conn, data) {
-  try { conn.send(data) } catch {}
+  try { if (conn && conn.open) conn.send(data) } catch {}
 }
 
 export function hostBroadcast(host, data) {
@@ -77,7 +69,6 @@ export function hostBroadcast(host, data) {
 
 export function hostBroadcastAll(host, data) {
   hostBroadcast(host, data)
-  hostSend(host.peer, data)
 }
 
 export function destroyHost(host) {
@@ -90,22 +81,24 @@ export function destroyHost(host) {
 export function connectToHost(pin, role = 'player') {
   const peer = new Peer(undefined, PEER_OPTIONS)
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 30000)
+    const t = setTimeout(() => reject(new Error('No se pudo conectar. Verifica el PIN y tu internet.')), 30000)
+    let connected = false
     peer.on('open', (id) => {
       const conn = peer.connect(pin, { reliable: true })
       const client = { peer, conn, id }
       conn.on('open', () => {
+        connected = true
         clearTimeout(t)
         resolve(client)
       })
-      conn.on('error', (e) => { clearTimeout(t); reject(e) })
+      conn.on('error', () => { if (!connected) { clearTimeout(t); reject(new Error('Error de conexión. Prueba con Chrome.')) } })
     })
-    peer.on('error', (e) => { clearTimeout(t); reject(e) })
+    peer.on('error', (e) => { if (!connected) { clearTimeout(t); reject(e) } })
   })
 }
 
 export function clientSend(conn, data) {
-  try { conn.send(data) } catch {}
+  try { if (conn && conn.open) conn.send(data) } catch {}
 }
 
 export function onClientData(conn, handler) {
