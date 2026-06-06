@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { generatePin, createHost, onHostConnection, hostBroadcast, hostSend, destroyHost } from '../peer-service'
+import { createHost, onHostConnection, hostBroadcast, destroyHost } from '../peer-service'
 import AvatarDisplay from './AvatarDisplay'
 import { getMultiplePopularSongs } from '../data/popularSongs'
 import { getRandomArtist, getRandomQuestion } from '../data/teamData'
@@ -102,12 +102,10 @@ export default function TeacherPanel() {
       setQuestions(allQuestions)
 
       let host
-      for (let attempt = 0; attempt < 10; attempt++) {
-        const p = generatePin()
-        try {
-          host = await createHost(p)
-          break
-        } catch { continue }
+      try {
+        host = await createHost()
+      } catch {
+        return
       }
       if (!host) return
 
@@ -116,13 +114,12 @@ export default function TeacherPanel() {
       setPin(gamePin)
 
       onHostConnection(host, (conn, info, data) => {
-        if (data.type === 'join' && data.role !== 'display') {
-          const playerId = `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
-          const player = { id: playerId, name: data.name, avatar: data.avatar || '🦸', score: 0 }
+        if (data.type === 'player_joined') {
+          const playerId = data.playerId
+          const player = { id: playerId, name: data.name, avatar: data.avatar || '??', score: 0 }
           playersRef.current = [...playersRef.current, player]
           setPlayers(playersRef.current)
           broadcastPlayers()
-          hostSend(conn, { type: 'joined', playerId })
         } else if (data.type === 'answer') {
           if (!answersRef.current[data.playerId]) {
             answersRef.current[data.playerId] = data.answerIndex

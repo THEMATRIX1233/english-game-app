@@ -59,17 +59,16 @@ export default function PlayerView() {
     setError('')
     const gamePin = pin.trim().toUpperCase()
     try {
-      const client = await connectToHost(gamePin, 'player')
+      const client = await connectToHost(gamePin, 'player', name.trim(), avatar)
       clientRef.current = client
-      const playerId = `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
-      clientSend(client.conn, { type: 'join', playerId, name: name.trim(), avatar })
+      playerIdRef.current = client.id
 
       setPhase('waiting')
       setFadeIn(true)
 
       onClientData(client.conn, (data) => {
         if (data.type === 'joined') {
-          playerIdRef.current = data.playerId || playerId
+          playerIdRef.current = data.playerId || client.id
           setPhase('waiting')
           setFadeIn(true)
         } else if (data.type === 'question') {
