@@ -23,8 +23,8 @@ export const teamArtists = [
     nationality: "Argentine",
     genre: "Latin Trap/Reggaeton",
     popularSong: "Mentiste",
-    description: "Cazzu is an Argentine singer and songwriter of Latin trap and reggaeton.",
-    concertFact: "Two weeks ago I saw Cazzu live in Buenos Aires. The crowd was amazing!",
+    description: "Cazzu (real name Julieta Cazzuchelli) is an Argentine singer and songwriter of Latin trap and reggaeton.",
+    concertFact: "I went to Cazzu's concert in Buenos Aires. I got there by bus and metro. The weather was warm and pleasant!",
   },
   {
     id: 4,
