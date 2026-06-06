@@ -78,7 +78,7 @@ export const teamArtists = [
     genre: "R&B/Pop",
     popularSong: "Blinding Lights",
     description: "The Weeknd is a Canadian singer, songwriter, and record producer known for his unique voice and style.",
-    concertFact: "Last month I attended The Weeknd's concert. The light show was spectacular!",
+    concertFact: "I went to The Weeknd's concert in Toronto. We used a train and a streetcar to get to the stadium. At first it was very windy, but then it was perfect for the show!",
   },
   {
     id: 10,
