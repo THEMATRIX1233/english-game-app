@@ -8,7 +8,17 @@ const ICE_SERVERS = {
     { urls: 'stun:stun3.l.google.com:19302' },
     { urls: 'stun:stun4.l.google.com:19302' },
     { urls: 'stun:stun.cloudflare.com:3478' },
+    {
+      urls: [
+        'turn:global.relay.metered.ca:80?transport=tcp',
+        'turn:global.relay.metered.ca:443?transport=tcp',
+        'turns:global.relay.metered.ca:443?transport=tcp',
+      ],
+      username: '370e0c14a753092e97cd645f',
+      credential: 'TJ+gyUoqt2xo3oI2',
+    },
   ],
+  iceCandidatePoolSize: 10,
   sdpSemantics: 'unified-plan'
 }
 
