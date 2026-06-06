@@ -117,12 +117,11 @@ export default function TeacherPanel() {
 
       onHostConnection(host, (conn, info, data) => {
         if (data.type === 'join' && data.role !== 'display') {
-          const playerId = `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
-          const player = { id: playerId, name: data.name, avatar: data.avatar || '🦸', score: 0 }
+          const player = { id: info.playerId, name: info.name, avatar: info.avatar || '🦸', score: 0 }
           playersRef.current = [...playersRef.current, player]
           setPlayers(playersRef.current)
           broadcastPlayers()
-          hostSend(conn, { type: 'joined', playerId })
+          hostSend(conn, { type: 'joined', playerId: info.playerId })
         } else if (data.type === 'answer') {
           if (!answersRef.current[data.playerId]) {
             answersRef.current[data.playerId] = data.answerIndex

@@ -1,19 +1,7 @@
-import Peer from 'peerjs'
+import mqtt from 'mqtt'
 
-const ICE_SERVERS = {
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun3.l.google.com:19302' },
-    { urls: 'stun:stun4.l.google.com:19302' },
-    { urls: 'stun:stun.cloudflare.com:3478' },
-  ],
-  iceTransportPolicy: 'all',
-  sdpSemantics: 'unified-plan',
-}
-
-const PEER_OPTIONS = { debug: 0, config: ICE_SERVERS }
+const BROKER_URL = 'wss://broker.hivemq.com:8884/mqtt'
+let _host = null
 
 export function generatePin() {
   return Math.random().toString(36).substring(2, 6).toUpperCase()
@@ -22,90 +10,118 @@ export function generatePin() {
 // ===== HOST (Teacher's browser) =====
 
 export function createHost(pin) {
-  const peer = new Peer(pin, PEER_OPTIONS)
-  const host = { peer, pin, connections: new Map(), displayConn: null }
+  const client = mqtt.connect(BROKER_URL, {
+    clientId: 'h_' + pin + '_' + Date.now(),
+    clean: true,
+  })
+  const host = { client, pin, players: new Map(), displayConnected: false }
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('No se pudo crear el juego. Revisa tu conexión a internet.')), 30000)
-    peer.on('open', () => { clearTimeout(t); resolve(host) })
-    peer.on('error', (e) => { clearTimeout(t); reject(e) })
+    const t = setTimeout(() => reject(new Error('No se pudo crear el juego.')), 15000)
+    client.on('connect', () => {
+      clearTimeout(t)
+      client.subscribe('game/' + pin + '/join', { qos: 0 })
+      client.subscribe('game/' + pin + '/answer', { qos: 0 })
+      _host = host
+      resolve(host)
+    })
+    client.on('error', (e) => { clearTimeout(t); reject(e) })
   })
 }
 
 export function onHostConnection(host, cb) {
-  host.peer.on('connection', (conn) => {
-    let resolved = false
-    const info = { conn, playerId: null, name: '', avatar: '' }
-    conn.on('data', (data) => {
-      if (!resolved && data.type === 'join') {
-        resolved = true
-        info.playerId = data.playerId
-        info.name = data.name
-        info.avatar = data.avatar
-        info.role = data.role || 'player'
-        if (info.role === 'display') {
-          host.displayConn = conn
-        } else {
-          host.connections.set(conn, info)
-        }
-      }
-      cb(conn, info, data)
-    })
-    conn.on('close', () => {
-      host.connections.delete(conn)
-      if (host.displayConn === conn) host.displayConn = null
-    })
-    conn.on('error', () => {})
-  })
+  const handler = (topic, message) => {
+    let data
+    try { data = JSON.parse(message.toString()) } catch { return }
+    if (topic.endsWith('/join')) {
+      const playerId = data.playerId || data.id
+      const info = { playerId, name: data.name || '', avatar: data.avatar || '' }
+      info.role = data.role || 'player'
+      if (!host.players.has(playerId)) host.players.set(playerId, info)
+      if (info.role === 'display') host.displayConnected = true
+      cb({ playerId }, info, { type: 'join', playerId, name: data.name, avatar: data.avatar, role: data.role })
+    } else if (topic.endsWith('/answer')) {
+      cb({ playerId: data.playerId }, { playerId: data.playerId }, data)
+    }
+  }
+  host.client.on('message', handler)
 }
 
 export function hostSend(conn, data) {
-  try { if (conn && conn.open) conn.send(data) } catch {}
+  if (_host && conn && conn.playerId) {
+    _host.client.publish('game/' + _host.pin + '/to_' + conn.playerId, JSON.stringify(data), { qos: 0 })
+  }
 }
 
 export function hostBroadcast(host, data) {
-  host.connections.forEach((_, conn) => hostSend(conn, data))
-  if (host.displayConn) hostSend(host.displayConn, data)
+  host.client.publish('game/' + host.pin + '/state', JSON.stringify(data), { qos: 0 })
 }
 
 export function hostBroadcastAll(host, data) {
-  hostBroadcast(host, data)
+  host.client.publish('game/' + host.pin + '/state', JSON.stringify(data), { qos: 0 })
 }
 
 export function destroyHost(host) {
-  host.connections.forEach((_, conn) => { try { conn.close() } catch {} })
-  host.peer.destroy()
+  try { host.client.end(true) } catch {}
+  _host = null
 }
 
 // ===== CLIENT (Student / Display browser) =====
 
-export function connectToHost(pin, role = 'player') {
-  const peer = new Peer(undefined, PEER_OPTIONS)
+export function connectToHost(pin, role, playerName, playerAvatar) {
+  const playerId = 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
+  const client = mqtt.connect(BROKER_URL, {
+    clientId: 'c_' + playerId + '_' + Date.now(),
+    clean: true,
+  })
+  const conn = { client, playerId, pin, _role: role }
+  const clientObj = { peer: client, conn, id: playerId }
+  const isPlayer = role === 'player'
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('No se pudo conectar. Verifica el PIN y tu internet.')), 30000)
-    let connected = false
-    peer.on('open', (id) => {
-      const conn = peer.connect(pin, { reliable: true })
-      const client = { peer, conn, id }
-      conn.on('open', () => {
-        connected = true
-        clearTimeout(t)
-        resolve(client)
-      })
-      conn.on('error', () => { if (!connected) { clearTimeout(t); reject(new Error('Error de conexión. Prueba con Chrome.')) } })
+    const t = setTimeout(() => reject(new Error('No se pudo conectar. Verifica el PIN.')), 15000)
+    let resolved = false
+    client.on('connect', () => {
+      client.subscribe('game/' + pin + '/state', { qos: 0 })
+      client.subscribe('game/' + pin + '/to_' + playerId, { qos: 0 })
+      if (isPlayer) {
+        client.publish('game/' + pin + '/join', JSON.stringify({
+          type: 'join', playerId,
+          name: playerName || '', avatar: playerAvatar || '', role: 'player',
+        }), { qos: 0 })
+      } else {
+        resolved = true; clearTimeout(t); resolve(clientObj)
+      }
     })
-    peer.on('error', (e) => { if (!connected) { clearTimeout(t); reject(e) } })
+    client.on('message', (topic, message) => {
+      if (!isPlayer || resolved) return
+      let data
+      try { data = JSON.parse(message.toString()) } catch { return }
+      if (topic === 'game/' + pin + '/to_' + playerId) {
+        resolved = true; clearTimeout(t); resolve(clientObj)
+      }
+    })
+    client.on('error', () => { if (!resolved) { clearTimeout(t); reject(new Error('Error de conexión.')) } })
   })
 }
 
 export function clientSend(conn, data) {
-  try { if (conn && conn.open) conn.send(data) } catch {}
+  if (conn && conn.client && conn.client.connected) {
+    const topic = data.type === 'join'
+      ? 'game/' + conn.pin + '/join'
+      : 'game/' + conn.pin + '/answer'
+    conn.client.publish(topic, JSON.stringify(data), { qos: 0 })
+  }
 }
 
 export function onClientData(conn, handler) {
-  conn.on('data', handler)
+  const topicState = 'game/' + conn.pin + '/state'
+  const topicTo = 'game/' + conn.pin + '/to_' + conn.playerId
+  conn.client.on('message', (topic, message) => {
+    let data
+    try { data = JSON.parse(message.toString()) } catch { return }
+    if (topic === topicState || topic === topicTo) handler(data)
+  })
 }
 
 export function destroyClient(client) {
-  if (client.conn && client.conn.open) client.conn.close()
-  client.peer.destroy()
+  try { client.peer.end(true) } catch {}
 }
