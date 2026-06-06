@@ -12,6 +12,7 @@ export default function GameView({ gamePin }) {
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION)
   const [answerCount, setAnswerCount] = useState(0)
   const [totalPlayers, setTotalPlayers] = useState(0)
+  const [totalQuestions, setTotalQuestions] = useState(0)
   const [results, setResults] = useState(null)
   const [scores, setScores] = useState({})
   const [fadeIn, setFadeIn] = useState(false)
@@ -86,7 +87,6 @@ export default function GameView({ gamePin }) {
     }
   }, [currentQuestion, phase])
 
-  const [totalQuestions, setTotalQuestions] = useState(0)
   const total = results?.players?.length || totalPlayers || players.length || 1
   const answeredCount = results ? total : answerCount
   const timerPct = (timeLeft / TIMER_DURATION) * 100
@@ -199,15 +199,21 @@ export default function GameView({ gamePin }) {
                 <p className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 italic">"{currentQuestion.prompt}"</p>
               )}
             </div>
-            {currentQuestion.type === 'guess-song' && currentQuestion.artworkUrl && (
+            {currentQuestion.type === 'guess-song' && (
               <div className="flex justify-center">
                 <div className="relative">
-                  <img src={currentQuestion.artworkUrl} alt="" className="w-56 h-56 md:w-64 md:h-64 rounded-3xl shadow-2xl object-cover ring-2 ring-white/10" />
-                  <div className="absolute inset-0 rounded-3xl bg-black/20 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                      <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  {currentQuestion.artworkUrl ? (
+                    <img src={currentQuestion.artworkUrl} alt="" className="w-48 h-48 md:w-56 md:h-56 rounded-3xl shadow-2xl object-cover ring-2 ring-white/10" />
+                  ) : currentQuestion.previewUrl ? (
+                    <div className="w-48 h-48 md:w-56 md:h-56 rounded-3xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-white/10 flex items-center justify-center">
+                      <span className="text-6xl">🎵</span>
                     </div>
-                  </div>
+                  ) : null}
+                  {currentQuestion.previewUrl && (
+                    <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full bg-purple-500/30 backdrop-blur-md border border-purple-500/50 flex items-center justify-center animate-bounce">
+                      <svg className="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -333,7 +339,7 @@ export default function GameView({ gamePin }) {
               {topPlayers.length > 1 && (
                 <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] w-36">
                   <div className="text-3xl mb-2">🥈</div>
-                  <div className="text-4xl mb-1">{topPlayers[1].avatar || '🦸'}</div>
+                  <AvatarDisplay avatar={topPlayers[1].avatar} className="text-4xl mb-1" imgClass="w-14 h-14 rounded-full mx-auto" />
                   <p className="text-white font-bold text-lg">{topPlayers[1].name}</p>
                   <p className="text-gray-300 text-sm font-semibold">{topPlayers[1].score.toLocaleString()} pts</p>
                 </div>
@@ -341,7 +347,7 @@ export default function GameView({ gamePin }) {
               {topPlayers.length > 0 && (
                 <div className="bg-gradient-to-b from-yellow-500/10 to-transparent rounded-2xl p-8 border border-yellow-500/30 shadow-lg shadow-yellow-500/10 w-40 -mt-4">
                   <div className="text-4xl mb-2">🥇</div>
-                  <div className="text-5xl mb-1">{topPlayers[0].avatar || '🦸'}</div>
+                  <AvatarDisplay avatar={topPlayers[0].avatar} className="text-5xl mb-1" imgClass="w-16 h-16 rounded-full mx-auto" />
                   <p className="text-white font-bold text-xl">{topPlayers[0].name}</p>
                   <p className="text-yellow-400 text-lg font-black">{topPlayers[0].score.toLocaleString()} pts</p>
                 </div>
@@ -349,7 +355,7 @@ export default function GameView({ gamePin }) {
               {topPlayers.length > 2 && (
                 <div className="bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] w-36">
                   <div className="text-3xl mb-2">🥉</div>
-                  <div className="text-4xl mb-1">{topPlayers[2].avatar || '🦸'}</div>
+                  <AvatarDisplay avatar={topPlayers[2].avatar} className="text-4xl mb-1" imgClass="w-14 h-14 rounded-full mx-auto" />
                   <p className="text-white font-bold text-lg">{topPlayers[2].name}</p>
                   <p className="text-amber-500 text-sm font-semibold">{topPlayers[2].score.toLocaleString()} pts</p>
                 </div>
