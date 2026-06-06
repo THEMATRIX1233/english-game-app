@@ -101,8 +101,8 @@ export default function PlayerView() {
           setFadeIn(true)
         }
       })
-    } catch {
-      setError('Could not connect to game. Check the PIN and try again.')
+    } catch (e) {
+      setError('No se pudo conectar. ' + (e ? e.message : 'Verifica el PIN e intenta de nuevo.'))
     }
   }, [name, pin, avatar])
 
