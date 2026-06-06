@@ -1,6 +1,18 @@
 import Peer from 'peerjs'
 
-const HOST_OPTIONS = { debug: 0 }
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' },
+  ],
+  sdpSemantics: 'unified-plan'
+}
+
+const PEER_OPTIONS = { debug: 0, config: ICE_SERVERS }
 
 export function generatePin() {
   return Math.random().toString(36).substring(2, 6).toUpperCase()
@@ -9,10 +21,10 @@ export function generatePin() {
 // ===== HOST (Teacher's browser) =====
 
 export function createHost(pin) {
-  const peer = new Peer(pin, HOST_OPTIONS)
+  const peer = new Peer(pin, PEER_OPTIONS)
   const host = { peer, pin, connections: new Map(), displayConn: null }
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 15000)
+    const t = setTimeout(() => reject(new Error('timeout')), 30000)
     peer.on('open', () => { clearTimeout(t); resolve(host) })
     peer.on('error', (e) => { clearTimeout(t); reject(e) })
   })
@@ -66,9 +78,9 @@ export function destroyHost(host) {
 // ===== CLIENT (Student / Display browser) =====
 
 export function connectToHost(pin, role = 'player') {
-  const peer = new Peer(undefined, HOST_OPTIONS)
+  const peer = new Peer(undefined, PEER_OPTIONS)
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 15000)
+    const t = setTimeout(() => reject(new Error('timeout')), 30000)
     peer.on('open', (id) => {
       const conn = peer.connect(pin, { reliable: true })
       const client = { peer, conn, id }
