@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { students, defaultAvatars } from '../data/profiles'
 import { getQuestionsForStudent } from '../data/artistQuestions'
 
@@ -29,6 +29,26 @@ export default function Lobby({ onEnterTeacherMode }) {
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(pairs))
   }, [pairs])
+
+  const bgAudioRef = useRef(null)
+
+  useEffect(() => {
+    const audio = new Audio('https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/72/fd/e0/72fde090-4913-f65e-edc4-f488f1c52ee8/mzaf_8965793460077282531.plus.aac.p.m4a')
+    audio.loop = true
+    audio.volume = 0.1
+    bgAudioRef.current = audio
+    audio.play().catch(() => {})
+    const handleInteraction = () => {
+      audio.play().catch(() => {})
+      document.removeEventListener('click', handleInteraction)
+    }
+    document.addEventListener('click', handleInteraction, { once: true })
+    return () => {
+      audio.pause()
+      audio.src = ''
+      document.removeEventListener('click', handleInteraction)
+    }
+  }, [])
 
   const formPairs = () => {
     const shuffled = shuffle(students.filter(s => s.artist !== 'Pendiente'))
