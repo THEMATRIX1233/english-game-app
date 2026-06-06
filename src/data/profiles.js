@@ -47,8 +47,8 @@ export const students = [
   {
     id: 'fernanda',
     name: 'Fernanda',
-    artist: 'C.R.O',
-    artistId: 6,
+    artist: 'Justin Bieber',
+    artistId: 11,
     color: '#54A0FF',
     gradient: 'from-blue-500 to-cyan-500',
     bgGradient: 'from-blue-900/40 to-cyan-900/30',

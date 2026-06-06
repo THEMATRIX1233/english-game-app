@@ -28,6 +28,9 @@ export const popularSongs = [
   { trackName: "Love You Like A Love Song", artistName: "Selena Gomez", album: "When the Sun Goes Down", previewUrl: null, artworkUrl100: null },
   { trackName: "Save Your Tears", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Starboy", artistName: "The Weeknd", album: "Starboy", previewUrl: null, artworkUrl100: null },
+  { trackName: "Sorry", artistName: "Justin Bieber", album: "Purpose", previewUrl: null, artworkUrl100: null },
+  { trackName: "Love Yourself", artistName: "Justin Bieber", album: "Purpose", previewUrl: null, artworkUrl100: null },
+  { trackName: "Baby", artistName: "Justin Bieber", album: "My World 2.0", previewUrl: null, artworkUrl100: null },
 ]
 
 export async function enrichWithItunesData(song) {
