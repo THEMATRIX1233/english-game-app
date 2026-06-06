@@ -47,22 +47,22 @@ export default function TeacherPanel() {
     setLoading(true)
     try {
       const songs = await getMultiplePopularSongs(10)
-      const musicQuestions = songs.length >= 4 ? (() => {
-        const mq = []
-        for (let i = 0; i < Math.min(4, songs.length); i++) {
-          const song = songs[i]
-          const others = songs.filter(s => s.trackId !== song.trackId).slice(0, 3)
-          const options = [...others.map(o => o.trackName), song.trackName].sort(() => Math.random() - 0.5)
-          mq.push({
-            type: 'guess-song', title: '🎵 Guess the Song',
-            question: 'Listen to the preview. What song is this?',
-            previewUrl: song.previewUrl, artworkUrl: song.artworkUrl100?.replace('100x100', '200x200'),
-            options, correctIndex: options.indexOf(song.trackName),
-            correctAnswer: song.trackName, artist: song.artistName,
-          })
-        }
-        return mq
-      })() : []
+      const musicQuestions = (() => {
+          const mq = []
+          for (let i = 0; i < Math.min(4, songs.length); i++) {
+            const song = songs[i]
+            const others = songs.filter(s => s.trackId !== song.trackId).slice(0, 3)
+            const options = [...others.map(o => o.trackName), song.trackName].sort(() => Math.random() - 0.5)
+            mq.push({
+              type: 'guess-song', title: '🎵 Guess the Song',
+              question: song.previewUrl ? 'Listen to the preview. What song is this?' : 'What song is this?',
+              previewUrl: song.previewUrl, artworkUrl: song.artworkUrl100?.replace('100x100', '200x200'),
+              options, correctIndex: options.indexOf(song.trackName),
+              correctAnswer: song.trackName, artist: song.artistName,
+            })
+          }
+          return mq
+        })()
 
       const artistQuestions = []
       const usedArtists = new Set()

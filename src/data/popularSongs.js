@@ -4,6 +4,7 @@ export const popularSongs = [
   { trackName: "Du hast", artistName: "Rammstein", album: "Sehnsucht", previewUrl: null, artworkUrl100: null },
   { trackName: "Radio", artistName: "Rammstein", album: "Rammstein", previewUrl: null, artworkUrl100: null },
   { trackName: "Ausländer", artistName: "Rammstein", album: "Rammstein", previewUrl: null, artworkUrl100: null },
+  { trackName: "Sonne", artistName: "Rammstein", album: "Mutter", previewUrl: null, artworkUrl100: null },
   { trackName: "As It Was", artistName: "Harry Styles", album: "Harry's House", previewUrl: null, artworkUrl100: null },
   { trackName: "Watermelon Sugar", artistName: "Harry Styles", album: "Fine Line", previewUrl: null, artworkUrl100: null },
   { trackName: "Sign of the Times", artistName: "Harry Styles", album: "Harry Styles", previewUrl: null, artworkUrl100: null },
@@ -21,6 +22,7 @@ export const popularSongs = [
   { trackName: "Baby", artistName: "Justin Bieber", album: "My World 2.0", previewUrl: null, artworkUrl100: null },
   { trackName: "PARIS", artistName: "Junior H", album: "$AD BOYZ 4 LIFE II", previewUrl: null, artworkUrl100: null },
   { trackName: "MILES DE ROSAS", artistName: "Junior H", album: "$AD BOYZ 4 LIFE II", previewUrl: null, artworkUrl100: null },
+  { trackName: "M3&M4", artistName: "Junior H", album: "DEPR</3$$ED MFKZ", previewUrl: null, artworkUrl100: null },
   { trackName: "Blinding Lights", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Save Your Tears", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Starboy", artistName: "The Weeknd", album: "Starboy", previewUrl: null, artworkUrl100: null },
@@ -67,18 +69,18 @@ export async function getPopularSongWithPreview() {
 
 export async function getMultiplePopularSongs(count = 10) {
   const shuffled = [...popularSongs].sort(() => Math.random() - 0.5)
-  const results = []
+  const withPreview = []
+  const withoutPreview = []
   for (const song of shuffled) {
-    if (results.length >= count) break
+    if (withPreview.length >= count) break
     const enriched = await enrichWithItunesData(song)
     if (enriched.previewUrl) {
-      results.push(enriched)
+      withPreview.push(enriched)
+    } else {
+      withoutPreview.push({ ...enriched, trackId: enriched.trackId || enriched.trackName })
     }
   }
-  if (results.length === 0 && shuffled.length > 0) {
-    return shuffled.slice(0, Math.min(count, shuffled.length)).map(s => ({
-      ...s, previewUrl: '', trackId: s.trackName
-    }))
-  }
-  return results
+  const fillNeeded = Math.min(count - withPreview.length, withoutPreview.length)
+  const fallback = withoutPreview.slice(0, fillNeeded)
+  return [...withPreview, ...fallback].slice(0, count)
 }

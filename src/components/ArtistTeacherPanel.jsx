@@ -3,7 +3,7 @@ import { generatePin, createHost, onHostConnection, hostBroadcast, hostSend, des
 import AvatarDisplay from './AvatarDisplay'
 import { getStudentById } from '../data/profiles'
 import { getQuestionsForStudent } from '../data/artistQuestions'
-import { popularSongs } from '../data/popularSongs'
+import { popularSongs, enrichWithItunesData } from '../data/popularSongs'
 import { getRandomQuestion } from '../data/teamData'
 import { teamArtists } from '../data/teamPlaylist'
 
@@ -90,7 +90,17 @@ export default function ArtistTeacherPanel({ studentId, onBack }) {
   const startGame = useCallback(async () => {
     setLoading(true)
     const gameQuestions = buildArtistQuestions()
-    setQuestions(gameQuestions)
+    const enriched = await Promise.all(gameQuestions.map(async q => {
+      if (q.type === 'guess-song' && !q.previewUrl) {
+        const song = popularSongs.find(s => s.trackName === q.correctAnswer && s.artistName === q.artist)
+        if (song) {
+          const enrichedSong = await enrichWithItunesData(song)
+          if (enrichedSong.previewUrl) return { ...q, previewUrl: enrichedSong.previewUrl, artworkUrl: enrichedSong.artworkUrl100?.replace('100x100', '200x200') }
+        }
+      }
+      return q
+    }))
+    setQuestions(enriched)
 
     let host
     for (let attempt = 0; attempt < 10; attempt++) {
