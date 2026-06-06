@@ -1,146 +1,118 @@
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'wss://english-game-server.onrender.com'
+import Peer from 'peerjs'
+
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' },
+    {
+      urls: [
+        'turn:global.relay.metered.ca:80?transport=tcp',
+        'turn:global.relay.metered.ca:443?transport=tcp',
+        'turns:global.relay.metered.ca:443?transport=tcp',
+      ],
+      username: '370e0c14a753092e97cd645f',
+      credential: 'TJ+gyUoqt2xo3oI2',
+    },
+  ],
+  iceCandidatePoolSize: 10,
+  sdpSemantics: 'unified-plan'
+}
+
+const PEER_OPTIONS = { debug: 0, config: ICE_SERVERS }
 
 export function generatePin() {
   return Math.random().toString(36).substring(2, 6).toUpperCase()
 }
 
-function connectWebSocket() {
-  return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 15000)
-    const ws = new WebSocket(SERVER_URL)
-    ws.onopen = () => { clearTimeout(t); resolve(ws) }
-    ws.onerror = () => { clearTimeout(t); reject(new Error('connection failed')) }
-  })
-}
-
 // ===== HOST (Teacher's browser) =====
 
-export async function createHost() {
-  const ws = await connectWebSocket()
-  ws.send(JSON.stringify({ type: 'create_game' }))
-  const host = { ws, pin: null, playerId: null, connections: new Map(), displayConn: null, listeners: [] }
+export function createHost(pin) {
+  const peer = new Peer(pin, PEER_OPTIONS)
+  const host = { peer, pin, connections: new Map(), displayConn: null }
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 15000)
-    ws.onmessage = (e) => {
-      let data
-      try { data = JSON.parse(e.data) } catch { return }
-      if (data.type === 'created') {
-        clearTimeout(t)
-        host.pin = data.pin
-        host.playerId = data.playerId
-        resolve(host)
-        host.listeners.forEach(l => l(data))
-      } else if (data.type === 'player_joined') {
-        const info = { playerId: data.playerId, name: data.name, avatar: data.avatar }
-        host.connections.set(data.playerId, info)
-        host.listeners.forEach(l => l(data))
-      } else if (data.type === 'player_left') {
-        host.connections.delete(data.playerId)
-        host.listeners.forEach(l => l(data))
-      } else if (data.type === 'display_connected') {
-        host.displayConn = { id: 'display' }
-        host.listeners.forEach(l => l(data))
-      } else if (data.type === 'display_disconnected') {
-        host.displayConn = null
-        host.listeners.forEach(l => l(data))
-      } else {
-        host.listeners.forEach(l => l(data))
-      }
-    }
-    ws.onclose = () => {
-      host.listeners.forEach(l => l({ type: 'disconnected' }))
-    }
-    ws.onerror = () => {
-      reject(new Error('connection error'))
-    }
+    const t = setTimeout(() => reject(new Error('timeout')), 30000)
+    peer.on('open', () => { clearTimeout(t); resolve(host) })
+    peer.on('error', (e) => { clearTimeout(t); reject(e) })
   })
 }
 
 export function onHostConnection(host, cb) {
-  const listener = (data) => {
-    if (data.type === 'player_joined') {
-      const info = {
-        playerId: data.playerId,
-        name: data.name,
-        avatar: data.avatar,
+  host.peer.on('connection', (conn) => {
+    let resolved = false
+    const info = { conn, playerId: null, name: '', avatar: '' }
+    conn.on('data', (data) => {
+      if (!resolved && data.type === 'join') {
+        resolved = true
+        info.playerId = data.playerId
+        info.name = data.name
+        info.avatar = data.avatar
+        info.role = data.role || 'player'
+        if (info.role === 'display') {
+          host.displayConn = conn
+        } else {
+          host.connections.set(conn, info)
+        }
       }
-      cb(null, info, { type: 'join', playerId: data.playerId, name: data.name, avatar: data.avatar })
-    } else if (data.type === 'player_left') {
-      cb(null, { playerId: data.playerId }, { type: 'leave', playerId: data.playerId })
-    }
-  }
-  host.listeners.push(listener)
-  return () => {
-    host.listeners = host.listeners.filter(l => l !== listener)
-  }
+      cb(conn, info, data)
+    })
+    conn.on('close', () => {
+      host.connections.delete(conn)
+      if (host.displayConn === conn) host.displayConn = null
+    })
+  })
 }
 
-export function hostSend(target, data) {
-  if (target && target.ws && target.ws.readyState === WebSocket.OPEN) {
-    target.ws.send(JSON.stringify({ type: 'send', to: target.playerId || 'teacher', msg: data }))
-  }
+export function hostSend(conn, data) {
+  try { conn.send(data) } catch {}
 }
 
 export function hostBroadcast(host, data) {
-  if (host.ws.readyState === WebSocket.OPEN) {
-    host.ws.send(JSON.stringify({ type: 'broadcast', to: 'all', msg: data }))
-  }
+  host.connections.forEach((_, conn) => hostSend(conn, data))
+  if (host.displayConn) hostSend(host.displayConn, data)
 }
 
 export function hostBroadcastAll(host, data) {
   hostBroadcast(host, data)
+  hostSend(host.peer, data)
 }
 
 export function destroyHost(host) {
-  try { host.ws.close() } catch {}
+  host.connections.forEach((_, conn) => { try { conn.close() } catch {} })
+  host.peer.destroy()
 }
 
 // ===== CLIENT (Student / Display browser) =====
 
-export async function connectToHost(pin, role = 'player', playerName = '', playerAvatar = '') {
-  const ws = await connectWebSocket()
-  const playerId = `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
-  const client = { ws, id: playerId, conn: ws, pin }
+export function connectToHost(pin, role = 'player') {
+  const peer = new Peer(undefined, PEER_OPTIONS)
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error('timeout')), 15000)
-    let resolved = false
-    ws.onmessage = (e) => {
-      let data
-      try { data = JSON.parse(e.data) } catch { return }
-      if (data.type === 'joined' && !resolved) {
-        resolved = true
+    const t = setTimeout(() => reject(new Error('timeout')), 30000)
+    peer.on('open', (id) => {
+      const conn = peer.connect(pin, { reliable: true })
+      const client = { peer, conn, id }
+      conn.on('open', () => {
         clearTimeout(t)
-        client.id = data.playerId || playerId
         resolve(client)
-      } else if (data.type === 'error' && !resolved) {
-        resolved = true
-        clearTimeout(t)
-        reject(new Error(data.message))
-      }
-    }
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: 'join_game', pin, role, playerId, name: playerName, avatar: playerAvatar }))
-    }
-    ws.onerror = () => {
-      if (!resolved) { resolved = true; reject(new Error('connection error')) }
-    }
+      })
+      conn.on('error', (e) => { clearTimeout(t); reject(e) })
+    })
+    peer.on('error', (e) => { clearTimeout(t); reject(e) })
   })
 }
 
 export function clientSend(conn, data) {
-  if (conn.readyState === WebSocket.OPEN) {
-    conn.send(JSON.stringify({ type: 'send', to: 'teacher', msg: data }))
-  }
+  try { conn.send(data) } catch {}
 }
 
 export function onClientData(conn, handler) {
-  conn.onmessage = (e) => {
-    let data
-    try { data = JSON.parse(e.data) } catch { return }
-    handler(data)
-  }
+  conn.on('data', handler)
 }
 
 export function destroyClient(client) {
-  try { client.ws.close() } catch {}
+  if (client.conn && client.conn.open) client.conn.close()
+  client.peer.destroy()
 }

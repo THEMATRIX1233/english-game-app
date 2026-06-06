@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { connectToHost, onClientData, destroyClient } from '../peer-service'
+import { connectToHost, onClientData, destroyClient, clientSend } from '../peer-service'
 import AvatarDisplay from './AvatarDisplay'
 
 const COLORS = ['#E74C3C', '#3498DB', '#F1C40F', '#2ECC71']
@@ -29,6 +29,7 @@ export default function GameView({ gamePin }) {
 
     connectToHost(gp, 'display').then(client => {
       clientRef.current = client
+      clientSend(client.conn, { type: 'join', role: 'display' })
 
       onClientData(client.conn, (data) => {
         if (data.type === 'playerList') {
