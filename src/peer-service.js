@@ -1,8 +1,8 @@
 import mqtt from 'mqtt'
 
 const BROKERS = [
-  'wss://wss.emqx.io:8084/mqtt',
   'wss://broker.hivemq.com:8884/mqtt',
+  'wss://wss.emqx.io:8084/mqtt',
 ]
 
 let _host = null
