@@ -5,7 +5,7 @@ export const artistQuestions = {
       {
         id: 'hs1',
         type: 'multiple-choice',
-        question: 'Where is he from?',
+        question: 'Where is Harry Styles from?',
         options: ['United States', 'United Kingdom', 'Australia', 'Canada'],
         correctIndex: 1,
         category: 'artist-info',
@@ -66,7 +66,7 @@ export const artistQuestions = {
       {
         id: 'joji1',
         type: 'multiple-choice',
-        question: 'Where is he from?',
+        question: 'Where is Joji from?',
         options: ['South Korea', 'Japan', 'China', 'Thailand'],
         correctIndex: 1,
         category: 'artist-info',
@@ -127,7 +127,7 @@ export const artistQuestions = {
       {
         id: 'cazzu2',
         type: 'multiple-choice',
-        question: 'Where is she from?',
+        question: 'Where is Cazzu from?',
         options: ['Argentina', 'Spain', 'Mexico', 'Colombia'],
         correctIndex: 0,
         category: 'artist-info',
@@ -209,7 +209,7 @@ export const artistQuestions = {
       {
         id: 'ramm1',
         type: 'multiple-choice',
-        question: 'Where are they from?',
+        question: 'Where is Rammstein from?',
         options: ['Austria', 'Germany', 'Switzerland', 'Sweden'],
         correctIndex: 1,
         category: 'artist-info',
@@ -262,7 +262,7 @@ export const artistQuestions = {
       {
         id: 'jh1',
         type: 'multiple-choice',
-        question: 'Where is he from?',
+        question: 'Where is Junior H from?',
         options: ['Mexico', 'USA', 'Spain', 'Colombia'],
         correctIndex: 0,
         category: 'artist-info',
@@ -304,7 +304,7 @@ export const artistQuestions = {
   araceli: {
     artist: 'Selena Gomez',
     questions: [
-      { id: 'sg1', type: 'multiple-choice', question: 'Where is she from?', options: ['Texas, United States', 'California, United States', 'London, England', 'Toronto, Canada'], correctIndex: 0, category: 'artist-info' },
+      { id: 'sg1', type: 'multiple-choice', question: 'Where is Selena Gomez from?', options: ['Texas, United States', 'California, United States', 'London, England', 'Toronto, Canada'], correctIndex: 0, category: 'artist-info' },
       { id: 'sg2', type: 'multiple-choice', question: 'Who did I go to the concert with?', options: ['My friend', 'My parents', 'My cousin', 'My neighbor'], correctIndex: 0, category: 'concert-experience' },
       { id: 'sg3', type: 'multiple-choice', question: 'How was the weather that day?', options: ['Cool and pleasant', 'Hot and sunny', 'Cold and rainy', 'Snowy'], correctIndex: 0, category: 'concert-experience' },
       { id: 'sg4', type: 'multiple-choice', question: 'Where did the concert take place?', options: ['In a stadium', 'In a theater', 'In a park', 'In a club'], correctIndex: 0, category: 'concert-experience' },
@@ -314,7 +314,7 @@ export const artistQuestions = {
   andresito: {
     artist: 'Shakira',
     questions: [
-      { id: 'shak1', type: 'multiple-choice', question: 'Where is she from?', options: ['Colombia', 'Mexico', 'Spain', 'Argentina'], correctIndex: 0, category: 'artist-info' },
+      { id: 'shak1', type: 'multiple-choice', question: 'Where is Shakira from?', options: ['Colombia', 'Mexico', 'Spain', 'Argentina'], correctIndex: 0, category: 'artist-info' },
       { id: 'shak2', type: 'multiple-choice', question: 'What is Shakira\'s full name?', options: ['Shakira Isabel Mebarak Ripoll', 'Shakira Maria Gomez', 'Shakira Laura Perez', 'Shakira Ana Lopez'], correctIndex: 0, category: 'artist-info' },
       { id: 'shak3', type: 'multiple-choice', question: 'What languages does Shakira sing in?', options: ['Spanish and English', 'Only English', 'Only Spanish', 'French and English'], correctIndex: 0, category: 'music' },
       { id: 'shak4', type: 'multiple-choice', question: 'What is Shakira\'s most famous song?', options: ['Hips Don\'t Lie', 'Du hast', 'Lady Blue', 'Watermelon Sugar'], correctIndex: 0, category: 'music' },
