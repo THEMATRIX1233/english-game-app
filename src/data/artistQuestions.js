@@ -5,10 +5,11 @@ export const artistQuestions = {
       {
         id: 'hs1',
         type: 'multiple-choice',
-        question: 'He is from the United Kingdom.',
+        question: 'Where is he from?',
         options: ['United States', 'United Kingdom', 'Australia', 'Canada'],
         correctIndex: 1,
         category: 'artist-info',
+        correctAnswer: 'He is from the United Kingdom.',
       },
       {
         id: 'hs2',
@@ -21,7 +22,7 @@ export const artistQuestions = {
       {
         id: 'hs3',
         type: 'multiple-choice',
-        question: 'How did I travel to the Harry Styles concert in Mexico City?',
+        question: 'How did Vanesa travel to the Harry Styles concert in Mexico City?',
         options: ['By car', 'By plane', 'By bus', 'By train'],
         correctIndex: 1,
         category: 'concert-experience',
@@ -66,10 +67,11 @@ export const artistQuestions = {
       {
         id: 'joji1',
         type: 'multiple-choice',
-        question: 'He is from Japan.',
+        question: 'Where is he from?',
         options: ['South Korea', 'Japan', 'China', 'Thailand'],
         correctIndex: 1,
         category: 'artist-info',
+        correctAnswer: 'He is from Japan.',
       },
       {
         id: 'joji2',
@@ -119,10 +121,11 @@ export const artistQuestions = {
       {
         id: 'cazzu1',
         type: 'multiple-choice',
-        question: 'She is from Argentina.',
+        question: 'Where is she from?',
         options: ['Spain', 'Mexico', 'Argentina', 'Colombia'],
         correctIndex: 2,
         category: 'artist-info',
+        correctAnswer: 'She is from Argentina.',
       },
       {
         id: 'cazzu2',
@@ -172,10 +175,11 @@ export const artistQuestions = {
       {
         id: 'bunbury1',
         type: 'multiple-choice',
-        question: 'He is from Spain.',
+        question: 'Where is he from?',
         options: ['Mexico', 'Argentina', 'Spain', 'Chile'],
         correctIndex: 2,
         category: 'artist-info',
+        correctAnswer: 'He is from Spain.',
       },
       {
         id: 'bunbury2',
@@ -225,10 +229,11 @@ export const artistQuestions = {
       {
         id: 'ramm1',
         type: 'multiple-choice',
-        question: 'They are from Germany.',
+        question: 'Where are they from?',
         options: ['Austria', 'Germany', 'Switzerland', 'Sweden'],
         correctIndex: 1,
         category: 'artist-info',
+        correctAnswer: 'They are from Germany.',
       },
       {
         id: 'ramm2',
@@ -323,10 +328,11 @@ export const artistQuestions = {
       {
         id: 'jh1',
         type: 'multiple-choice',
-        question: 'He is from Mexico.',
+        question: 'Where is he from?',
         options: ['Mexico', 'USA', 'Spain', 'Colombia'],
         correctIndex: 0,
         category: 'artist-info',
+        correctAnswer: 'He is from Mexico.',
       },
       {
         id: 'jh2',
@@ -368,10 +374,11 @@ export const artistQuestions = {
       {
         id: 'tw1',
         type: 'multiple-choice',
-        question: 'She is from Colombia.',
+        question: 'Where is she from?',
         options: ['USA', 'Canada', 'Colombia', 'Australia'],
         correctIndex: 2,
         category: 'artist-info',
+        correctAnswer: 'She is from Colombia.',
       },
       {
         id: 'tw2',

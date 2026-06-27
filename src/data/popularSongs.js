@@ -25,6 +25,10 @@ export const popularSongs = [
   { trackName: "Blinding Lights", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Save Your Tears", artistName: "The Weeknd", album: "After Hours", previewUrl: null, artworkUrl100: null },
   { trackName: "Starboy", artistName: "The Weeknd", album: "Starboy", previewUrl: null, artworkUrl100: null },
+  { trackName: "Hips Don't Lie", artistName: "Shakira", album: "Oral Fixation, Vol. 2", previewUrl: null, artworkUrl100: null },
+  { trackName: "Waka Waka (This Time for Africa)", artistName: "Shakira", album: "Listen Up! The Official 2010 FIFA World Cup Album", previewUrl: null, artworkUrl100: null },
+  { trackName: "Whenever, Wherever", artistName: "Shakira", album: "Laundry Service", previewUrl: null, artworkUrl100: null },
+  { trackName: "She Wolf", artistName: "Shakira", album: "She Wolf", previewUrl: null, artworkUrl100: null },
 ]
 
 export async function enrichWithItunesData(song) {

@@ -65,8 +65,8 @@ export const students = [
   {
     id: 'andresito',
     name: 'Andresito',
-    artist: 'The Weeknd',
-    artistId: 9,
+    artist: 'Shakira',
+    artistId: 10,
     color: '#C084FC',
     gradient: 'from-purple-400 to-violet-500',
     bgGradient: 'from-purple-900/40 to-violet-900/30',

@@ -89,6 +89,16 @@ export const teamArtists = [
     description: "The Weeknd is a Canadian singer, songwriter, and record producer known for his unique voice and style.",
     concertFact: "Last month I attended The Weeknd's concert. The light show was spectacular!",
   },
+  {
+    id: 10,
+    name: "Shakira",
+    nationality: "Colombian",
+    country: "Colombia",
+    genre: "Pop/Latin",
+    popularSong: "Hips Don't Lie",
+    description: "Shakira is a Colombian singer, dancer and songwriter known for her Latin pop and belly dancing.",
+    concertFact: "Last month I attended Shakira's concert. The dance show was spectacular!",
+  },
 ]
 
 export const grammarExercises = [
