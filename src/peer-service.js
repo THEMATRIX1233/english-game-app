@@ -1,8 +1,8 @@
 import mqtt from 'mqtt'
 
 const BROKERS = [
-  'wss://wss.emqx.io:8084/mqtt',
   'wss://broker.hivemq.com:8884/mqtt',
+  'wss://wss.emqx.io:8084/mqtt',
 ]
 
 let _host = null
@@ -71,7 +71,7 @@ export function createHost(pin) {
         })
         c2.on('error', (e2) => log('host retry error', e2 && e2.message))
       }
-    }, 12000)
+    }, 5000)
 
     client.on('connect', () => {
       if (connected) return
@@ -174,7 +174,7 @@ export function connectToHost(pin, role, playerName, playerAvatar) {
         }
       })
       c2.on('error', (e2) => log('client retry error', e2 && e2.message))
-    }, 15000)
+    }, 5000)
 
     let subs = 0
     let resolved = false
