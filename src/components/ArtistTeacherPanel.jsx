@@ -76,12 +76,12 @@ export default function ArtistTeacherPanel({ studentId, onBack }) {
     while (grammarPool.length < 3) grammarPool.push({ ...getRandomQuestion(), type: 'grammar', title: '📝 Grammar' })
     grammarPool.slice(0, 4).forEach(q => allQuestions.push(q))
     artists.forEach(art => {
-      const nats = ['German', 'British', 'Argentine', 'Spanish', 'Japanese', 'Mexican', 'Canadian']
-      const wrongNats = nats.filter(n => n !== art.nationality).sort(() => Math.random() - 0.5)
+      const countries = ['Germany', 'the UK', 'Argentina', 'Spain', 'Japan', 'Mexico', 'Canada', 'the United States', 'Colombia']
+      const wrongCountries = countries.filter(c => c !== art.country).sort(() => Math.random() - 0.5)
       allQuestions.push({
         type: 'artist-info', title: '👤 Artist Info', question: `What is true about ${art.name}?`, artist: art,
-        options: shuffle([`${art.name} is from ${art.nationality}.`, `From: ${wrongNats[0]}`, `From: ${wrongNats[1]}`, `From: ${wrongNats[2]}`]),
-        correctIndex: 0, correctAnswer: `${art.name} is from ${art.nationality}.`, explanation: `${art.name} is ${art.nationality}. ${art.concertFact}`,
+        options: shuffle([`From: ${art.country}`, `From: ${wrongCountries[0]}`, `From: ${wrongCountries[1]}`, `From: ${wrongCountries[2]}`]),
+        correctIndex: 0, correctAnswer: `${art.name} is from ${art.country}.`, explanation: `${art.name} is from ${art.country}. ${art.concertFact}`,
       })
     })
     return shuffle(allQuestions).slice(0, totalQuestions)

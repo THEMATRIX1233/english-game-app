@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { students, defaultAvatars } from '../data/profiles'
+import { students, defaultAvatars, groups } from '../data/profiles'
 import { getQuestionsForStudent } from '../data/artistQuestions'
 
 function shuffle(arr) {
@@ -133,6 +133,14 @@ export default function Lobby({ onEnterTeacherMode }) {
             }`}>
             👫 Parejas {pairs.length > 0 && `(${pairs.length})`}
           </button>
+          <button onClick={() => setMode('groups')}
+            className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+              mode === 'groups'
+                ? 'bg-white/[0.08] text-white border border-white/[0.12]'
+                : 'text-white/40 hover:text-white/60 bg-white/[0.02] border border-transparent'
+            }`}>
+            👥 Grupos
+          </button>
         </div>
 
         {/* Pairs mode */}
@@ -191,6 +199,40 @@ export default function Lobby({ onEnterTeacherMode }) {
                 <p className="text-white/30 text-sm mt-2">Se crearán 4 parejas al azar</p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Groups mode */}
+        {mode === 'groups' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {groups.map((group, idx) => {
+                const groupStudents = group.ids.map(id => students.find(s => s.id === id)).filter(Boolean)
+                return (
+                  <div key={group.name} className="bg-white/[0.03] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center"
+                    style={{ borderColor: group.color + '40' }}>
+                    <h3 className="text-lg font-bold text-white mb-4">{group.name}</h3>
+                    <div className="flex items-center justify-center gap-4">
+                      {groupStudents.map(s => (
+                        <div key={s.id} className="flex flex-col items-center gap-2">
+                          <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl"
+                            style={{ background: s.color + '20', border: `1px solid ${s.color}40` }}>🎤</div>
+                          <span className="text-white font-medium text-sm">{s.name}</span>
+                          <span className="text-white/30 text-xs">{s.artist}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <button onClick={() => {
+                      const ids = groupStudents.map(s => s.id)
+                      onEnterTeacherMode(ids.join('+'))
+                    }}
+                      className="mt-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-bold text-white text-sm shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
+                      ▶ Iniciar Kahoot
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
 

@@ -45,15 +45,6 @@ export const students = [
     bgGradient: 'from-red-900/40 to-rose-900/30',
   },
   {
-    id: 'fernanda',
-    name: 'Fernanda',
-    artist: 'Justin Bieber',
-    artistId: 11,
-    color: '#54A0FF',
-    gradient: 'from-blue-500 to-cyan-500',
-    bgGradient: 'from-blue-900/40 to-cyan-900/30',
-  },
-  {
     id: 'diego',
     name: 'Diego',
     artist: 'Junior H',
@@ -65,8 +56,8 @@ export const students = [
   {
     id: 'andresito',
     name: 'Andresito',
-    artist: 'The Weeknd',
-    artistId: 9,
+    artist: 'Shakira',
+    artistId: 12,
     color: '#C084FC',
     gradient: 'from-purple-400 to-violet-500',
     bgGradient: 'from-purple-900/40 to-violet-900/30',
@@ -101,6 +92,12 @@ export function getDefaultEmoji(id) {
   }
   return map[id] || '👤'
 }
+
+export const groups = [
+  { name: 'Grupo 1', ids: ['paloma', 'vanesa', 'uriel'], color: '#FF6B9D', bg: 'from-pink-500/20 to-purple-500/20' },
+  { name: 'Grupo 2', ids: ['jareth', 'araceli'], color: '#54A0FF', bg: 'from-blue-500/20 to-cyan-500/20' },
+  { name: 'Grupo 3', ids: ['diego', 'andresito', 'yahir'], color: '#2ED573', bg: 'from-green-500/20 to-emerald-500/20' },
+]
 
 export function getStudentById(id) {
   return students.find(s => s.id === id) || null
