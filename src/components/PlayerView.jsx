@@ -38,6 +38,15 @@ export default function PlayerView() {
   useEffect(() => { questionRef.current = currentQuestion }, [currentQuestion])
 
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem('player_session')
+      if (saved) {
+        const { pin: savedPin, name: savedName, avatar: savedAvatar } = JSON.parse(saved)
+        if (savedPin) setPin(savedPin)
+        if (savedName) setName(savedName)
+        if (savedAvatar) setAvatar(savedAvatar)
+      }
+    } catch {}
     return () => {
       if (audioRef.current) { audioRef.current.pause(); audioRef.current = null }
       if (clientRef.current) destroyClient(clientRef.current)
@@ -62,6 +71,7 @@ export default function PlayerView() {
       const client = await connectToHost(gamePin, 'player', name.trim(), avatar)
       clientRef.current = client
       playerIdRef.current = client.id
+      try { localStorage.setItem('player_session', JSON.stringify({ pin: gamePin, name: name.trim(), avatar })) } catch {}
 
       setPhase('waiting')
       setFadeIn(true)

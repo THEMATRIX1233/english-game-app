@@ -30,6 +30,30 @@ export default function TeacherPanel() {
   const questionTimeLimitRef = useRef(30)
   const playersRef = useRef([])
 
+  const saveGameState = (pin, players, questions, qIndex) => {
+    try { localStorage.setItem('teacher_game', JSON.stringify({ pin, players, questions, qIndex, savedAt: Date.now() })) } catch {}
+  }
+  const clearSavedGame = () => { try { localStorage.removeItem('teacher_game') } catch {} }
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('teacher_game')
+      if (!saved) return
+      const data = JSON.parse(saved)
+      if (Date.now() - data.savedAt > 3600000) { clearSavedGame(); return }
+      if (window.confirm('Hay una sesión guardada de hace unos minutos. ¿Quieres reanudarla?')) {
+        setPin(data.pin)
+        setPlayers(data.players || [])
+        setQuestions(data.questions || [])
+        setQuestionIndex(data.qIndex || 0)
+        playersRef.current = data.players || []
+        setPhase('lobby')
+      } else {
+        clearSavedGame()
+      }
+    } catch {}
+  }, [])
+
   const broadcastPlayers = useCallback(() => {
     const host = hostRef.current
     if (!host) return
@@ -115,11 +139,15 @@ export default function TeacherPanel() {
       const gamePin = host.pin
       setPin(gamePin)
 
+      saveGameState(gamePin, [], [], 0)
+
       onHostConnection(host, (conn, info, data) => {
         if (data.type === 'join' && data.role !== 'display') {
+          playersRef.current = playersRef.current.filter(p => p.name !== info.name)
           const player = { id: info.playerId, name: info.name, avatar: info.avatar || '🦸', score: 0 }
           playersRef.current = [...playersRef.current, player]
           setPlayers(playersRef.current)
+          saveGameState(gamePin, playersRef.current, questions, questionIndex)
           broadcastPlayers()
           hostSend(conn, { type: 'joined', playerId: info.playerId })
         } else if (data.type === 'answer') {

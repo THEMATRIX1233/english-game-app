@@ -1,7 +1,7 @@
 import mqtt from 'mqtt'
 
 const BROKERS = [
-  'wss://wss.emqx.io:8084/mqtt',
+  'wss://test.mosquitto.org:8081/mqtt',
   'wss://broker.hivemq.com:8884/mqtt',
 ]
 
@@ -17,7 +17,7 @@ function connectMQTT() {
   return mqtt.connect(url, {
     clientId: 'e_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
     clean: true,
-    connectTimeout: 8000,
+    connectTimeout: 3000,
   })
 }
 
@@ -71,7 +71,7 @@ export function createHost(pin) {
         })
         c2.on('error', (e2) => log('host retry error', e2 && e2.message))
       }
-    }, 12000)
+    }, 3000)
 
     client.on('connect', () => {
       if (connected) return
@@ -174,7 +174,7 @@ export function connectToHost(pin, role, playerName, playerAvatar) {
         }
       })
       c2.on('error', (e2) => log('client retry error', e2 && e2.message))
-    }, 15000)
+    }, 3000)
 
     let subs = 0
     let resolved = false
