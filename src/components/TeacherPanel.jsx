@@ -117,6 +117,7 @@ export default function TeacherPanel() {
 
       onHostConnection(host, (conn, info, data) => {
         if (data.type === 'join' && data.role !== 'display') {
+          playersRef.current = playersRef.current.filter(p => p.name !== info.name)
           const player = { id: info.playerId, name: info.name, avatar: info.avatar || '🦸', score: 0 }
           playersRef.current = [...playersRef.current, player]
           setPlayers(playersRef.current)
