@@ -107,15 +107,15 @@ export default function TeacherPanel() {
         let artist = getRandomArtist()
         while (usedArtists.has(artist.name)) artist = getRandomArtist()
         usedArtists.add(artist.name)
-        const allNationalities = ['German', 'British', 'Argentine', 'Spanish', 'Japanese', 'Mexican']
+        const allCountries = ['Germany', 'the UK', 'Argentina', 'Spain', 'Japan', 'Mexico', 'Canada']
         const allSongs = ['Radio', 'Du hast', 'As It Was', 'Watermelon Sugar', 'Mentiste', 'Lady Blue', 'El jinete', 'Before The Day Is Over', 'SLOW DANCING IN THE DARK', 'After House', 'PARIS']
         const allGenres = ['Industrial Metal', 'Pop/Rock', 'Latin Trap', 'Rock/Latin', 'R&B/Lo-fi', 'Regional Mexican']
         const wrongOptions = [
-          `From: ${allNationalities.filter(n => n !== artist.nationality).sort(() => Math.random() - 0.5)[0]}`,
+          `From: ${allCountries.filter(c => c !== artist.country).sort(() => Math.random() - 0.5)[0]}`,
           `Popular Song: "${allSongs.filter(s => s !== artist.popularSong).sort(() => Math.random() - 0.5)[0]}"`,
           `Genre: ${allGenres.filter(g => g !== artist.genre.split('/')[0]).sort(() => Math.random() - 0.5)[0]}`,
         ].sort(() => Math.random() - 0.5)
-        const correctOption = `${artist.name} is from ${artist.nationality}.`
+        const correctOption = `${artist.name} is from ${artist.country}.`
         const allOptions = [correctOption, ...wrongOptions].slice(0, 4).sort(() => Math.random() - 0.5)
 
         artistQuestions.push({
@@ -125,8 +125,8 @@ export default function TeacherPanel() {
           artist,
           options: allOptions,
           correctIndex: allOptions.indexOf(correctOption),
-          correctAnswer: `${artist.name} is from ${artist.nationality}. Popular song: "${artist.popularSong}".`,
-          explanation: `${artist.name} is ${artist.nationality}. ${artist.concertFact}`,
+          correctAnswer: `${artist.name} is from ${artist.country}. Popular song: "${artist.popularSong}".`,
+          explanation: `${artist.name} is from ${artist.country}. ${artist.concertFact}`,
         })
       }
 

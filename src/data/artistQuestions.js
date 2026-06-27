@@ -5,7 +5,7 @@ export const artistQuestions = {
       {
         id: 'hs1',
         type: 'multiple-choice',
-        question: 'Where is Harry Styles from?',
+        question: 'He is from the United Kingdom.',
         options: ['United States', 'United Kingdom', 'Australia', 'Canada'],
         correctIndex: 1,
         category: 'artist-info',
@@ -21,7 +21,7 @@ export const artistQuestions = {
       {
         id: 'hs3',
         type: 'multiple-choice',
-        question: 'How did I travel to the concert in Mexico City?',
+        question: 'How did I travel to the Harry Styles concert in Mexico City?',
         options: ['By car', 'By plane', 'By bus', 'By train'],
         correctIndex: 1,
         category: 'concert-experience',
@@ -29,7 +29,7 @@ export const artistQuestions = {
       {
         id: 'hs4',
         type: 'multiple-choice',
-        question: 'What were people doing at the stadium?',
+        question: 'What were people doing at the Harry Styles stadium?',
         options: ['Reading books', 'Singing and dancing', 'Sleeping', 'Eating dinner'],
         correctIndex: 1,
         category: 'concert-experience',
@@ -37,7 +37,7 @@ export const artistQuestions = {
       {
         id: 'hs5',
         type: 'multiple-choice',
-        question: 'What was Harry doing during the concert?',
+        question: 'What was Harry Styles doing during the concert?',
         options: ['Cooking on stage', 'Playing guitar and singing', 'Painting a picture', 'Reading a book'],
         correctIndex: 1,
         category: 'concert-experience',
@@ -66,7 +66,7 @@ export const artistQuestions = {
       {
         id: 'joji1',
         type: 'multiple-choice',
-        question: 'Where is Joji from?',
+        question: 'He is from Japan.',
         options: ['South Korea', 'Japan', 'China', 'Thailand'],
         correctIndex: 1,
         category: 'artist-info',
@@ -90,7 +90,7 @@ export const artistQuestions = {
       {
         id: 'joji4',
         type: 'multiple-choice',
-        question: 'How did the person feel at Joji\'s concert?',
+        question: 'How did Uriel feel at Joji\'s concert?',
         options: ['Bored', 'Angry', 'Emotional', 'Sleepy'],
         correctIndex: 2,
         category: 'concert-experience',
@@ -106,7 +106,7 @@ export const artistQuestions = {
       {
         id: 'joji6',
         type: 'multiple-choice',
-        question: 'When did I attend Joji\'s concert?',
+        question: 'When did Uriel attend Joji\'s concert?',
         options: ['Last year', 'Last month', 'Last week', 'Yesterday'],
         correctIndex: 1,
         category: 'concert-experience',
@@ -119,7 +119,7 @@ export const artistQuestions = {
       {
         id: 'cazzu1',
         type: 'multiple-choice',
-        question: 'Where is Cazzu from?',
+        question: 'She is from Argentina.',
         options: ['Spain', 'Mexico', 'Argentina', 'Colombia'],
         correctIndex: 2,
         category: 'artist-info',
@@ -143,7 +143,7 @@ export const artistQuestions = {
       {
         id: 'cazzu4',
         type: 'multiple-choice',
-        question: 'Where did the person see Cazzu live?',
+        question: 'Where did Paloma see Cazzu live?',
         options: ['Buenos Aires', 'Madrid', 'Mexico City', 'Santiago'],
         correctIndex: 0,
         category: 'concert-experience',
@@ -159,7 +159,7 @@ export const artistQuestions = {
       {
         id: 'cazzu6',
         type: 'multiple-choice',
-        question: 'When did I see Cazzu live?',
+        question: 'When did Paloma see Cazzu live?',
         options: ['Two weeks ago', 'Last year', 'Yesterday', 'Six months ago'],
         correctIndex: 0,
         category: 'concert-experience',
@@ -172,7 +172,7 @@ export const artistQuestions = {
       {
         id: 'bunbury1',
         type: 'multiple-choice',
-        question: 'Where is Bunbury from?',
+        question: 'He is from Spain.',
         options: ['Mexico', 'Argentina', 'Spain', 'Chile'],
         correctIndex: 2,
         category: 'artist-info',
@@ -212,7 +212,7 @@ export const artistQuestions = {
       {
         id: 'bunbury6',
         type: 'multiple-choice',
-        question: 'When did I go to Bunbury\'s concert?',
+        question: 'When did Jareth go to Bunbury\'s concert?',
         options: ['Last summer', 'Last winter', 'This spring', 'Last fall'],
         correctIndex: 0,
         category: 'concert-experience',
@@ -225,7 +225,7 @@ export const artistQuestions = {
       {
         id: 'ramm1',
         type: 'multiple-choice',
-        question: 'Where is Rammstein from?',
+        question: 'They are from Germany.',
         options: ['Austria', 'Germany', 'Switzerland', 'Sweden'],
         correctIndex: 1,
         category: 'artist-info',
@@ -265,7 +265,7 @@ export const artistQuestions = {
       {
         id: 'ramm6',
         type: 'multiple-choice',
-        question: 'What was incredible at Rammstein\'s concert?',
+        question: 'What was incredible at Yahir\'s Rammstein concert?',
         options: ['The fireworks', 'The food', 'The merchandise', 'The parking'],
         correctIndex: 0,
         category: 'concert-experience',
@@ -323,7 +323,7 @@ export const artistQuestions = {
       {
         id: 'jh1',
         type: 'multiple-choice',
-        question: 'Where is Junior H from?',
+        question: 'He is from Mexico.',
         options: ['Mexico', 'USA', 'Spain', 'Colombia'],
         correctIndex: 0,
         category: 'artist-info',
@@ -347,7 +347,7 @@ export const artistQuestions = {
       {
         id: 'jh4',
         type: 'multiple-choice',
-        question: 'When did I see Junior H live?',
+        question: 'When did Diego see Junior H live?',
         options: ['Last weekend', 'Last month', 'Last year', 'Yesterday'],
         correctIndex: 0,
         category: 'concert-experience',
@@ -363,45 +363,45 @@ export const artistQuestions = {
     ],
   },
   andresito: {
-    artist: 'The Weeknd',
+    artist: 'Shakira',
     questions: [
       {
         id: 'tw1',
         type: 'multiple-choice',
-        question: 'Where is The Weeknd from?',
-        options: ['USA', 'Canada', 'UK', 'Australia'],
-        correctIndex: 1,
+        question: 'She is from Colombia.',
+        options: ['USA', 'Canada', 'Colombia', 'Australia'],
+        correctIndex: 2,
         category: 'artist-info',
       },
       {
         id: 'tw2',
         type: 'multiple-choice',
-        question: 'What genre does The Weeknd sing?',
-        options: ['Country', 'R&B/Pop', 'Classical', 'Heavy Metal'],
+        question: 'What genre does Shakira sing?',
+        options: ['Country', 'Pop/Latin', 'Classical', 'Heavy Metal'],
         correctIndex: 1,
         category: 'music',
       },
       {
         id: 'tw3',
         type: 'multiple-choice',
-        question: 'What is a famous The Weeknd song?',
-        options: ['Blinding Lights', 'Yellow Submarine', 'Bohemian Rhapsody', 'Smells Like Teen Spirit'],
+        question: 'What is a famous Shakira song?',
+        options: ['Hips Dont Lie', 'Yellow Submarine', 'Bohemian Rhapsody', 'Smells Like Teen Spirit'],
         correctIndex: 0,
         category: 'music',
       },
       {
         id: 'tw4',
         type: 'multiple-choice',
-        question: 'What was spectacular at The Weeknd\'s concert?',
-        options: ['The food', 'The light show', 'The parking', 'The T-shirts'],
+        question: 'What was spectacular at Shakira\'s concert?',
+        options: ['The food', 'The dance show', 'The parking', 'The T-shirts'],
         correctIndex: 1,
         category: 'concert-experience',
       },
       {
         id: 'tw5',
         type: 'multiple-choice',
-        question: 'What is The Weeknd\'s style of music influenced by?',
-        options: ['R&B, pop and electronic', 'Country and folk', 'Jazz and blues', 'Classical and opera'],
+        question: 'What is Shakira\'s style of music influenced by?',
+        options: ['Pop, Latin and Arabic', 'Country and folk', 'Jazz and blues', 'Classical and opera'],
         correctIndex: 0,
         category: 'music',
       },
